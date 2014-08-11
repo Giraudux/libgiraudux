@@ -1,5 +1,14 @@
+/**
+ * \file netstring.c
+ * \author Alexis Giraudet
+ * \version 0.0
+ * \date 
+ * \brief 
+ */
+
 #include "netstring.h"
 
+#ifndef GRDX_NETSTRING_NO_ALLOC
 int grdx_netstring_decode_ab(char ** __netstring_block, size_t * __netstring_len)
 {
     char buffer[LEN_BUFFER_SIZE];
@@ -48,7 +57,9 @@ int grdx_netstring_decode_ab(char ** __netstring_block, size_t * __netstring_len
     
     return 0;
 }
+#endif /* GRDX_NETSTRING_NO_ALLOC */
 
+#ifndef GRDX_NETSTRING_NO_ALLOC
 int grdx_netstring_encode_ab(char ** __string_block, size_t * __string_len)
 {
     char buffer[LEN_BUFFER_SIZE];
@@ -78,7 +89,9 @@ int grdx_netstring_encode_ab(char ** __string_block, size_t * __string_len)
     
     return 0;
 }
+#endif /* GRDX_NETSTRING_NO_ALLOC */
 
+#ifndef GRDX_NETSTRING_NO_ALLOC
 int grdx_netstring_decode_wb(wchar_t ** __netstring_block, size_t * __netstring_len)
 {
     wchar_t buffer[LEN_BUFFER_SIZE];
@@ -127,6 +140,7 @@ int grdx_netstring_decode_wb(wchar_t ** __netstring_block, size_t * __netstring_
     
     return 0;
 }
+#endif /* GRDX_NETSTRING_NO_ALLOC */
 
 int grdx_netstring_to_string_wb(const wchar_t * __netstring_block, size_t __netstring_len, wchar_t ** __string_block, size_t * __string_len)
 {
@@ -166,7 +180,7 @@ int grdx_netstring_to_string_wb(const wchar_t * __netstring_block, size_t __nets
     {
         return 5;
     }
-    
+
     if(*__string_block == NULL)
     {
 #ifdef GRDX_NETSTRING_NO_ALLOC
@@ -177,6 +191,8 @@ int grdx_netstring_to_string_wb(const wchar_t * __netstring_block, size_t __nets
         {
             return 6;
         }
+        *__string_block = new_string;
+        *__string_len = len;
 #endif /* GRDX_NETSTRING_NO_ALLOC */
     }
     else if(*__string_len <len)
@@ -189,15 +205,16 @@ int grdx_netstring_to_string_wb(const wchar_t * __netstring_block, size_t __nets
         {
             return 7;
         }
+        *__string_block = new_string;
+        *__string_len = len;
 #endif /* GRDX_NETSTRING_NO_ALLOC */
     }
-    *__string_block = new_string;
-    *__string_len = len;
     wmemcpy(*__string_block, __netstring_block+buffer_len+1, len);
     
     return 0;
 }
 
+#ifndef GRDX_NETSTRING_NO_ALLOC
 int grdx_netstring_encode_wb(wchar_t ** __string_block, size_t * __string_len)
 {
     wchar_t buffer[LEN_BUFFER_SIZE];
@@ -227,12 +244,15 @@ int grdx_netstring_encode_wb(wchar_t ** __string_block, size_t * __string_len)
     
     return 0;
 }
+#endif /* GRDX_NETSTRING_NO_ALLOC */
 
 int grdx_string_to_netstring_wb(const wchar_t * __string_block, size_t __string_len, wchar_t ** __netstring_block, size_t * __netstring_len)
 {
     wchar_t buffer[LEN_BUFFER_SIZE];
     int buffer_len;
+    #ifndef GRDX_NETSTRING_NO_ALLOC
     wchar_t * new_netstring;
+    #endif /* GRDX_NETSTRING_NO_ALLOC */
     size_t new_netstring_len;
     
     buffer_len = swprintf(buffer, LEN_BUFFER_SIZE, L"%lu", __string_len);
@@ -252,6 +272,8 @@ int grdx_string_to_netstring_wb(const wchar_t * __string_block, size_t __string_
         {
             return 2;
         }
+        *__netstring_block = new_netstring;
+        *__netstring_len = new_netstring_len;
 #endif /* GRDX_NETSTRING_NO_ALLOC */
     }
     else if(*__netstring_len <new_netstring_len)
@@ -264,11 +286,10 @@ int grdx_string_to_netstring_wb(const wchar_t * __string_block, size_t __string_
         {
             return 3;
         }
+        *__netstring_block = new_netstring;
+        *__netstring_len = new_netstring_len;
 #endif /* GRDX_NETSTRING_NO_ALLOC */
     }
-    
-    *__netstring_block = new_netstring;
-    *__netstring_len = new_netstring_len;
     wmemcpy(*__netstring_block, buffer, buffer_len);
     (*__netstring_block)[buffer_len] = L':';
     wmemcpy((*__netstring_block)+buffer_len+1, __string_block, __string_len);
