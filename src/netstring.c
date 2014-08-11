@@ -48,6 +48,7 @@ int grdx_netstring_decode_ab(char ** __netstring_block, size_t * __netstring_len
     
     return 0;
 }
+
 int grdx_netstring_encode_ab(char ** __string_block, size_t * __string_len)
 {
     char buffer[LEN_BUFFER_SIZE];
@@ -77,6 +78,7 @@ int grdx_netstring_encode_ab(char ** __string_block, size_t * __string_len)
     
     return 0;
 }
+
 int grdx_netstring_decode_wb(wchar_t ** __netstring_block, size_t * __netstring_len)
 {
     wchar_t buffer[LEN_BUFFER_SIZE];
@@ -126,6 +128,76 @@ int grdx_netstring_decode_wb(wchar_t ** __netstring_block, size_t * __netstring_
     return 0;
 }
 
+int grdx_netstring_to_string_wb(const wchar_t * __netstring_block, size_t __netstring_len, wchar_t ** __string_block, size_t * __string_len)
+{
+    wchar_t buffer[LEN_BUFFER_SIZE];
+    size_t cpy_count;
+    wchar_t * chr_ret;
+    size_t len;
+    wchar_t * end_ptr;
+    size_t buffer_len;
+#ifndef GRDX_NETSTRING_NO_ALLOC
+    wchar_t * new_string;
+#endif /* GRDX_NETSTRING_NO_ALLOC */
+    
+    if(__netstring_block[__netstring_len-1] != L',')
+    {
+        return 1;
+    }
+    cpy_count = (__netstring_len < LEN_BUFFER_SIZE) ? __netstring_len : LEN_BUFFER_SIZE;
+    wmemcpy(buffer, __netstring_block, cpy_count);
+    chr_ret = wmemchr(buffer, L':', cpy_count);
+    if(chr_ret == NULL)
+    {
+        return 2;
+    }
+    *chr_ret = L'\0';
+    len = wcstoul(buffer, &end_ptr, 10);
+    if(end_ptr == buffer)
+    {
+        return 3;
+    }
+    if(((len == 0) || (len == ULONG_MAX)) && (errno == ERANGE))
+    {
+        return 4;
+    }
+    buffer_len = wcslen(buffer);
+    if(len != (__netstring_len - buffer_len - 2))
+    {
+        return 5;
+    }
+    
+    if(*__string_block == NULL)
+    {
+#ifdef GRDX_NETSTRING_NO_ALLOC
+        return 6;
+#else /* GRDX_NETSTRING_NO_ALLOC */
+        new_string = malloc(sizeof(wchar_t)*len);
+        if(new_string == NULL)
+        {
+            return 6;
+        }
+#endif /* GRDX_NETSTRING_NO_ALLOC */
+    }
+    else if(*__string_len <len)
+    {
+#ifdef GRDX_NETSTRING_NO_ALLOC
+        return 7;
+#else /* GRDX_NETSTRING_NO_ALLOC */
+        new_string = realloc(*__string_block, sizeof(wchar_t)*len);
+        if(new_string == NULL)
+        {
+            return 7;
+        }
+#endif /* GRDX_NETSTRING_NO_ALLOC */
+    }
+    *__string_block = new_string;
+    *__string_len = len;
+    wmemcpy(*__string_block, __netstring_block+buffer_len+1, len);
+    
+    return 0;
+}
+
 int grdx_netstring_encode_wb(wchar_t ** __string_block, size_t * __string_len)
 {
     wchar_t buffer[LEN_BUFFER_SIZE];
@@ -152,6 +224,55 @@ int grdx_netstring_encode_wb(wchar_t ** __string_block, size_t * __string_len)
     wmemcpy(*__string_block, buffer, buffer_len);
     (*__string_block)[buffer_len] = L':';
     (*__string_block)[(*__string_len)-1] = L',';
+    
+    return 0;
+}
+
+int grdx_string_to_netstring_wb(const wchar_t * __string_block, size_t __string_len, wchar_t ** __netstring_block, size_t * __netstring_len)
+{
+    wchar_t buffer[LEN_BUFFER_SIZE];
+    int buffer_len;
+    wchar_t * new_netstring;
+    size_t new_netstring_len;
+    
+    buffer_len = swprintf(buffer, LEN_BUFFER_SIZE, L"%lu", __string_len);
+    if(buffer_len < 1)
+    {
+        return 1;
+    }
+    new_netstring_len = __string_len+buffer_len+2;
+    
+    if(*__netstring_block == NULL)
+    {
+#ifdef GRDX_NETSTRING_NO_ALLOC
+        return 2;
+#else /* GRDX_NETSTRING_NO_ALLOC */
+        new_netstring = malloc(sizeof(wchar_t)*new_netstring_len);
+        if(new_netstring == NULL)
+        {
+            return 2;
+        }
+#endif /* GRDX_NETSTRING_NO_ALLOC */
+    }
+    else if(*__netstring_len <new_netstring_len)
+    {
+#ifdef GRDX_NETSTRING_NO_ALLOC
+        return 3;
+#else /* GRDX_NETSTRING_NO_ALLOC */
+        new_netstring = realloc(*__netstring_block, sizeof(wchar_t)*new_netstring_len);
+        if(new_netstring == NULL)
+        {
+            return 3;
+        }
+#endif /* GRDX_NETSTRING_NO_ALLOC */
+    }
+    
+    *__netstring_block = new_netstring;
+    *__netstring_len = new_netstring_len;
+    wmemcpy(*__netstring_block, buffer, buffer_len);
+    (*__netstring_block)[buffer_len] = L':';
+    wmemcpy((*__netstring_block)+buffer_len+1, __string_block, __string_len);
+    (*__netstring_block)[(*__netstring_len)-1] = L',';
     
     return 0;
 }
