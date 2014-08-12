@@ -11,49 +11,49 @@
 #ifndef GRDX_NETSTRING_NO_ALLOC
 int grdx_netstring_decode_ab(char ** __netstring_block, size_t * __netstring_len)
 {
-    char buffer[LEN_BUFFER_SIZE];
-    size_t cpy_count;
-    char * chr_ret;
-    size_t len;
-    char * end_ptr;
-    size_t buffer_len;
-    char * new_string;
+    char _buffer[LEN_BUFFER_SIZE];
+    size_t _cpy_count;
+    char * _chr_ret;
+    size_t _len;
+    char * _end_ptr;
+    size_t _buffer_len;
+    char * _new_string;
     
     if((*__netstring_block)[(*__netstring_len)-1] != ',')
     {
         return 1;
     }
-    cpy_count = ((*__netstring_len) < LEN_BUFFER_SIZE) ? (*__netstring_len) : LEN_BUFFER_SIZE;
-    memcpy(buffer, *__netstring_block, sizeof(char)*cpy_count);
-    chr_ret = memchr(buffer, ':', sizeof(char)*cpy_count);
-    if(chr_ret == NULL)
+    _cpy_count = ((*__netstring_len) < LEN_BUFFER_SIZE) ? (*__netstring_len) : LEN_BUFFER_SIZE;
+    memcpy(_buffer, *__netstring_block, sizeof(char)*_cpy_count);
+    _chr_ret = memchr(_buffer, ':', sizeof(char)*_cpy_count);
+    if(_chr_ret == NULL)
     {
         return 2;
     }
-    *chr_ret = '\0';
-    len = strtoul(buffer, &end_ptr, 10);
-    if(end_ptr == buffer)
+    *_chr_ret = '\0';
+    _len = strtoul(_buffer, &_end_ptr, 10);
+    if(_end_ptr == _buffer)
     {
         return 3;
     }
-    if(((len == 0) || (len == ULONG_MAX)) && (errno == ERANGE))
+    if(((_len == 0) || (_len == ULONG_MAX)) && (errno == ERANGE))
     {
         return 4;
     }
-    buffer_len = strlen(buffer);
-    if(len != ((*__netstring_len) - buffer_len - 2))
+    _buffer_len = strlen(_buffer);
+    if(_len != ((*__netstring_len) - _buffer_len - 2))
     {
         return 5;
     }
     
-    memmove(*__netstring_block, (*__netstring_block)+buffer_len+1, sizeof(char)*len);
-    new_string = realloc(*__netstring_block, sizeof(char)*len);
-    if(new_string == NULL)
+    memmove(*__netstring_block, (*__netstring_block)+_buffer_len+1, sizeof(char)*_len);
+    _new_string = realloc(*__netstring_block, sizeof(char)*_len);
+    if(_new_string == NULL)
     {
         return 6;
     }
-    *__netstring_len = len;
-    *__netstring_block = new_string;
+    *__netstring_len = _len;
+    *__netstring_block = _new_string;
     
     return 0;
 }
@@ -62,29 +62,29 @@ int grdx_netstring_decode_ab(char ** __netstring_block, size_t * __netstring_len
 #ifndef GRDX_NETSTRING_NO_ALLOC
 int grdx_netstring_encode_ab(char ** __string_block, size_t * __string_len)
 {
-    char buffer[LEN_BUFFER_SIZE];
-    int buffer_len;
-    char * new_netstring;
-    size_t new_netstring_len;
-    size_t old_string_len;
+    char _buffer[LEN_BUFFER_SIZE];
+    int _buffer_len;
+    char * _new_netstring;
+    size_t _new_netstring_len;
+    size_t _old_string_len;
     
-    buffer_len = snprintf(buffer, LEN_BUFFER_SIZE, "%lu", *__string_len);
-    if(buffer_len < 1)
+    _buffer_len = snprintf(_buffer, LEN_BUFFER_SIZE, "%lu", *__string_len);
+    if(_buffer_len < 1)
     {
         return 1;
     }
-    new_netstring_len = (*__string_len)+buffer_len+2;
-    new_netstring = realloc(*__string_block, sizeof(char)*new_netstring_len);
-    if(new_netstring == NULL)
+    _new_netstring_len = (*__string_len)+_buffer_len+2;
+    _new_netstring = realloc(*__string_block, sizeof(char)*_new_netstring_len);
+    if(_new_netstring == NULL)
     {
         return 2;
     }
-    old_string_len = *__string_len;
-    *__string_len = new_netstring_len;
-    *__string_block = new_netstring;
-    memmove((*__string_block)+buffer_len+1, *__string_block, sizeof(char)*old_string_len);
-    memcpy(*__string_block, buffer, sizeof(char)*buffer_len);
-    (*__string_block)[buffer_len] = ':';
+    _old_string_len = *__string_len;
+    *__string_len = _new_netstring_len;
+    *__string_block = _new_netstring;
+    memmove((*__string_block)+_buffer_len+1, *__string_block, sizeof(char)*_old_string_len);
+    memcpy(*__string_block, _buffer, sizeof(char)*_buffer_len);
+    (*__string_block)[_buffer_len] = ':';
     (*__string_block)[(*__string_len)-1] = ',';
     
     return 0;
@@ -94,49 +94,49 @@ int grdx_netstring_encode_ab(char ** __string_block, size_t * __string_len)
 #ifndef GRDX_NETSTRING_NO_ALLOC
 int grdx_netstring_decode_wb(wchar_t ** __netstring_block, size_t * __netstring_len)
 {
-    wchar_t buffer[LEN_BUFFER_SIZE];
-    size_t cpy_count;
-    wchar_t * chr_ret;
-    size_t len;
-    wchar_t * end_ptr;
-    size_t buffer_len;
-    wchar_t * new_string;
+    wchar_t _buffer[LEN_BUFFER_SIZE];
+    size_t _cpy_count;
+    wchar_t * _chr_ret;
+    size_t _len;
+    wchar_t * _end_ptr;
+    size_t _buffer_len;
+    wchar_t * _new_string;
     
     if((*__netstring_block)[(*__netstring_len)-1] != L',')
     {
         return 1;
     }
-    cpy_count = ((*__netstring_len) < LEN_BUFFER_SIZE) ? (*__netstring_len) : LEN_BUFFER_SIZE;
-    wmemcpy(buffer, *__netstring_block, cpy_count);
-    chr_ret = wmemchr(buffer, L':', cpy_count);
-    if(chr_ret == NULL)
+    _cpy_count = ((*__netstring_len) < LEN_BUFFER_SIZE) ? (*__netstring_len) : LEN_BUFFER_SIZE;
+    wmemcpy(_buffer, *__netstring_block, _cpy_count);
+    _chr_ret = wmemchr(_buffer, L':', _cpy_count);
+    if(_chr_ret == NULL)
     {
         return 2;
     }
-    *chr_ret = L'\0';
-    len = wcstoul(buffer, &end_ptr, 10);
-    if(end_ptr == buffer)
+    *_chr_ret = L'\0';
+    _len = wcstoul(_buffer, &_end_ptr, 10);
+    if(_end_ptr == _buffer)
     {
         return 3;
     }
-    if(((len == 0) || (len == ULONG_MAX)) && (errno == ERANGE))
+    if(((_len == 0) || (_len == ULONG_MAX)) && (errno == ERANGE))
     {
         return 4;
     }
-    buffer_len = wcslen(buffer);
-    if(len != ((*__netstring_len) - buffer_len - 2))
+    _buffer_len = wcslen(_buffer);
+    if(_len != ((*__netstring_len) - _buffer_len - 2))
     {
         return 5;
     }
     
-    wmemmove(*__netstring_block, (*__netstring_block)+buffer_len+1, len);
-    new_string = realloc(*__netstring_block, sizeof(wchar_t)*len);
-    if(new_string == NULL)
+    wmemmove(*__netstring_block, (*__netstring_block)+_buffer_len+1, _len);
+    _new_string = realloc(*__netstring_block, sizeof(wchar_t)*_len);
+    if(_new_string == NULL)
     {
         return 6;
     }
-    *__netstring_len = len;
-    *__netstring_block = new_string;
+    *__netstring_len = _len;
+    *__netstring_block = _new_string;
     
     return 0;
 }
@@ -144,39 +144,39 @@ int grdx_netstring_decode_wb(wchar_t ** __netstring_block, size_t * __netstring_
 
 int grdx_netstring_to_string_wb(const wchar_t * __netstring_block, size_t __netstring_len, wchar_t ** __string_block, size_t * __string_len)
 {
-    wchar_t buffer[LEN_BUFFER_SIZE];
-    size_t cpy_count;
-    wchar_t * chr_ret;
-    size_t len;
-    wchar_t * end_ptr;
-    size_t buffer_len;
+    wchar_t _buffer[LEN_BUFFER_SIZE];
+    size_t _cpy_count;
+    wchar_t * _chr_ret;
+    size_t _len;
+    wchar_t * _end_ptr;
+    size_t _buffer_len;
 #ifndef GRDX_NETSTRING_NO_ALLOC
-    wchar_t * new_string;
+    wchar_t * _new_string;
 #endif /* GRDX_NETSTRING_NO_ALLOC */
     
     if(__netstring_block[__netstring_len-1] != L',')
     {
         return 1;
     }
-    cpy_count = (__netstring_len < LEN_BUFFER_SIZE) ? __netstring_len : LEN_BUFFER_SIZE;
-    wmemcpy(buffer, __netstring_block, cpy_count);
-    chr_ret = wmemchr(buffer, L':', cpy_count);
-    if(chr_ret == NULL)
+    _cpy_count = (__netstring_len < LEN_BUFFER_SIZE) ? __netstring_len : LEN_BUFFER_SIZE;
+    wmemcpy(_buffer, __netstring_block, _cpy_count);
+    _chr_ret = wmemchr(_buffer, L':', _cpy_count);
+    if(_chr_ret == NULL)
     {
         return 2;
     }
-    *chr_ret = L'\0';
-    len = wcstoul(buffer, &end_ptr, 10);
-    if(end_ptr == buffer)
+    *_chr_ret = L'\0';
+    _len = wcstoul(_buffer, &_end_ptr, 10);
+    if(_end_ptr == _buffer)
     {
         return 3;
     }
-    if(((len == 0) || (len == ULONG_MAX)) && (errno == ERANGE))
+    if(((_len == 0) || (_len == ULONG_MAX)) && (errno == ERANGE))
     {
         return 4;
     }
-    buffer_len = wcslen(buffer);
-    if(len != (__netstring_len - buffer_len - 2))
+    _buffer_len = wcslen(_buffer);
+    if(_len != (__netstring_len - _buffer_len - 2))
     {
         return 5;
     }
@@ -186,30 +186,29 @@ int grdx_netstring_to_string_wb(const wchar_t * __netstring_block, size_t __nets
 #ifdef GRDX_NETSTRING_NO_ALLOC
         return 6;
 #else /* GRDX_NETSTRING_NO_ALLOC */
-        new_string = malloc(sizeof(wchar_t)*len);
-        if(new_string == NULL)
+        _new_string = malloc(sizeof(wchar_t)*_len);
+        if(_new_string == NULL)
         {
             return 6;
         }
-        *__string_block = new_string;
-        *__string_len = len;
+        *__string_block = _new_string;
 #endif /* GRDX_NETSTRING_NO_ALLOC */
     }
-    else if(*__string_len <len)
+    else if(*__string_len < _len)
     {
 #ifdef GRDX_NETSTRING_NO_ALLOC
         return 7;
 #else /* GRDX_NETSTRING_NO_ALLOC */
-        new_string = realloc(*__string_block, sizeof(wchar_t)*len);
-        if(new_string == NULL)
+        _new_string = realloc(*__string_block, sizeof(wchar_t)*_len);
+        if(_new_string == NULL)
         {
             return 7;
         }
-        *__string_block = new_string;
-        *__string_len = len;
+        *__string_block = _new_string;
 #endif /* GRDX_NETSTRING_NO_ALLOC */
     }
-    wmemcpy(*__string_block, __netstring_block+buffer_len+1, len);
+    *__string_len = _len;
+    wmemcpy(*__string_block, __netstring_block+_buffer_len+1, _len);
     
     return 0;
 }
@@ -217,29 +216,29 @@ int grdx_netstring_to_string_wb(const wchar_t * __netstring_block, size_t __nets
 #ifndef GRDX_NETSTRING_NO_ALLOC
 int grdx_netstring_encode_wb(wchar_t ** __string_block, size_t * __string_len)
 {
-    wchar_t buffer[LEN_BUFFER_SIZE];
-    int buffer_len;
-    wchar_t * new_netstring;
-    size_t new_netstring_len;
-    size_t old_string_len;
+    wchar_t _buffer[LEN_BUFFER_SIZE];
+    int _buffer_len;
+    wchar_t * _new_netstring;
+    size_t _new_netstring_len;
+    size_t _old_string_len;
     
-    buffer_len = swprintf(buffer, LEN_BUFFER_SIZE, L"%lu", *__string_len);
-    if(buffer_len < 1)
+    _buffer_len = swprintf(_buffer, LEN_BUFFER_SIZE, L"%lu", *__string_len);
+    if(_buffer_len < 1)
     {
         return 1;
     }
-    new_netstring_len = (*__string_len)+buffer_len+2;
-    new_netstring = realloc(*__string_block, sizeof(wchar_t)*new_netstring_len);
-    if(new_netstring == NULL)
+    _new_netstring_len = (*__string_len)+_buffer_len+2;
+    _new_netstring = realloc(*__string_block, sizeof(wchar_t)*_new_netstring_len);
+    if(_new_netstring == NULL)
     {
         return 2;
     }
-    old_string_len = *__string_len;
-    *__string_len = new_netstring_len;
-    *__string_block = new_netstring;
-    wmemmove((*__string_block)+buffer_len+1, *__string_block, old_string_len);
-    wmemcpy(*__string_block, buffer, buffer_len);
-    (*__string_block)[buffer_len] = L':';
+    _old_string_len = *__string_len;
+    *__string_len = _new_netstring_len;
+    *__string_block = _new_netstring;
+    wmemmove((*__string_block)+_buffer_len+1, *__string_block, _old_string_len);
+    wmemcpy(*__string_block, _buffer, _buffer_len);
+    (*__string_block)[_buffer_len] = L':';
     (*__string_block)[(*__string_len)-1] = L',';
     
     return 0;
@@ -248,52 +247,51 @@ int grdx_netstring_encode_wb(wchar_t ** __string_block, size_t * __string_len)
 
 int grdx_string_to_netstring_wb(const wchar_t * __string_block, size_t __string_len, wchar_t ** __netstring_block, size_t * __netstring_len)
 {
-    wchar_t buffer[LEN_BUFFER_SIZE];
-    int buffer_len;
+    wchar_t _buffer[LEN_BUFFER_SIZE];
+    int _buffer_len;
     #ifndef GRDX_NETSTRING_NO_ALLOC
-    wchar_t * new_netstring;
+    wchar_t * _new_netstring;
     #endif /* GRDX_NETSTRING_NO_ALLOC */
-    size_t new_netstring_len;
+    size_t _new_netstring_len;
     
-    buffer_len = swprintf(buffer, LEN_BUFFER_SIZE, L"%lu", __string_len);
-    if(buffer_len < 1)
+    _buffer_len = swprintf(_buffer, LEN_BUFFER_SIZE, L"%lu", __string_len);
+    if(_buffer_len < 1)
     {
         return 1;
     }
-    new_netstring_len = __string_len+buffer_len+2;
+    _new_netstring_len = __string_len+_buffer_len+2;
     
     if(*__netstring_block == NULL)
     {
 #ifdef GRDX_NETSTRING_NO_ALLOC
         return 2;
 #else /* GRDX_NETSTRING_NO_ALLOC */
-        new_netstring = malloc(sizeof(wchar_t)*new_netstring_len);
-        if(new_netstring == NULL)
+        _new_netstring = malloc(sizeof(wchar_t)*_new_netstring_len);
+        if(_new_netstring == NULL)
         {
             return 2;
         }
-        *__netstring_block = new_netstring;
-        *__netstring_len = new_netstring_len;
+        *__netstring_block = _new_netstring;
 #endif /* GRDX_NETSTRING_NO_ALLOC */
     }
-    else if(*__netstring_len <new_netstring_len)
+    else if(*__netstring_len < _new_netstring_len)
     {
 #ifdef GRDX_NETSTRING_NO_ALLOC
         return 3;
 #else /* GRDX_NETSTRING_NO_ALLOC */
-        new_netstring = realloc(*__netstring_block, sizeof(wchar_t)*new_netstring_len);
-        if(new_netstring == NULL)
+        _new_netstring = realloc(*__netstring_block, sizeof(wchar_t)*_new_netstring_len);
+        if(_new_netstring == NULL)
         {
             return 3;
         }
-        *__netstring_block = new_netstring;
-        *__netstring_len = new_netstring_len;
+        *__netstring_block = _new_netstring;
 #endif /* GRDX_NETSTRING_NO_ALLOC */
     }
-    wmemcpy(*__netstring_block, buffer, buffer_len);
-    (*__netstring_block)[buffer_len] = L':';
-    wmemcpy((*__netstring_block)+buffer_len+1, __string_block, __string_len);
-    (*__netstring_block)[(*__netstring_len)-1] = L',';
+    *__netstring_len = _new_netstring_len;
+    wmemcpy(*__netstring_block, _buffer, _buffer_len);
+    (*__netstring_block)[_buffer_len] = L':';
+    wmemcpy((*__netstring_block)+_buffer_len+1, __string_block, __string_len);
+    (*__netstring_block)[_new_netstring_len-1] = L',';
     
     return 0;
 }
@@ -305,34 +303,34 @@ int grdx_netstring_check_a(const char * __netstring)
 
 int grdx_netstring_check_ab(const char * __netstring_block, size_t __netstring_len)
 {
-    char buffer[LEN_BUFFER_SIZE];
-    size_t cpy_count;
-    char * chr_ret;
-    size_t len;
-    char * end_ptr;
+    char _buffer[LEN_BUFFER_SIZE];
+    size_t _cpy_count;
+    char * _chr_ret;
+    size_t _len;
+    char * _end_ptr;
     
     if(__netstring_block[__netstring_len-1] != ',')
     {
         return 1;
     }
-    cpy_count = (__netstring_len < LEN_BUFFER_SIZE) ? __netstring_len : LEN_BUFFER_SIZE;
-    memcpy(buffer, __netstring_block, cpy_count*sizeof(char));
-    chr_ret = memchr(buffer, ':', cpy_count*sizeof(char));
-    if(chr_ret == NULL)
+    _cpy_count = (__netstring_len < LEN_BUFFER_SIZE) ? __netstring_len : LEN_BUFFER_SIZE;
+    memcpy(_buffer, __netstring_block, _cpy_count*sizeof(char));
+    _chr_ret = memchr(_buffer, ':', _cpy_count*sizeof(char));
+    if(_chr_ret == NULL)
     {
         return 2;
     }
-    *chr_ret = '\0';
-    len = strtoul(buffer, &end_ptr, 10);
-    if(end_ptr == buffer)
+    *_chr_ret = '\0';
+    _len = strtoul(_buffer, &_end_ptr, 10);
+    if(_end_ptr == _buffer)
     {
         return 3;
     }
-    if(((len == 0) || (len == ULONG_MAX)) && (errno == ERANGE))
+    if(((_len == 0) || (_len == ULONG_MAX)) && (errno == ERANGE))
     {
         return 4;
     }
-    if(len != (__netstring_len - strlen(buffer) - 2))
+    if(_len != (__netstring_len - strlen(_buffer) - 2))
     {
         return 5;
     }
@@ -346,36 +344,158 @@ int grdx_netstring_check_w(const wchar_t * __netstring)
 
 int grdx_netstring_check_wb(const wchar_t * __netstring_block, size_t __netstring_len)
 {
-    wchar_t buffer[LEN_BUFFER_SIZE];
-    size_t cpy_count;
-    wchar_t * chr_ret;
-    size_t len;
-    wchar_t * end_ptr;
+    wchar_t _buffer[LEN_BUFFER_SIZE];
+    size_t _cpy_count;
+    wchar_t * _chr_ret;
+    size_t _len;
+    wchar_t * _end_ptr;
     
     if(__netstring_block[__netstring_len-1] != L',')
     {
         return 1;
     }
-    cpy_count = (__netstring_len < LEN_BUFFER_SIZE) ? __netstring_len : LEN_BUFFER_SIZE;
-    wmemcpy(buffer, __netstring_block, cpy_count);
-    chr_ret = wmemchr(buffer, L':', cpy_count);
-    if(chr_ret == NULL)
+    _cpy_count = (__netstring_len < LEN_BUFFER_SIZE) ? __netstring_len : LEN_BUFFER_SIZE;
+    wmemcpy(_buffer, __netstring_block, _cpy_count);
+    _chr_ret = wmemchr(_buffer, L':', _cpy_count);
+    if(_chr_ret == NULL)
     {
         return 2;
     }
-    *chr_ret = L'\0';
-    len = wcstoul(buffer, &end_ptr, 10);
-    if(end_ptr == buffer)
+    *_chr_ret = L'\0';
+    _len = wcstoul(_buffer, &_end_ptr, 10);
+    if(_end_ptr == _buffer)
     {
         return 3;
     }
-    if(((len == 0) || (len == ULONG_MAX)) && (errno == ERANGE))
+    if(((_len == 0) || (_len == ULONG_MAX)) && (errno == ERANGE))
     {
         return 4;
     }
-    if(len != (__netstring_len - wcslen(buffer) - 2))
+    if(_len != (__netstring_len - wcslen(_buffer) - 2))
     {
         return 5;
     }
+    return 0;
+}
+
+int grdx_netstring_to_string_ab(const char * __netstring_block, size_t __netstring_len, char ** __string_block, size_t * __string_len)
+{
+    char _buffer[LEN_BUFFER_SIZE];
+    size_t _cpy_count;
+    char * _chr_ret;
+    size_t _len;
+    char * _end_ptr;
+    size_t _buffer_len;
+#ifndef GRDX_NETSTRING_NO_ALLOC
+    char * _new_string;
+#endif /* GRDX_NETSTRING_NO_ALLOC */
+    
+    if(__netstring_block[__netstring_len-1] != ',')
+    {
+        return 1;
+    }
+    _cpy_count = (__netstring_len < LEN_BUFFER_SIZE) ? __netstring_len : LEN_BUFFER_SIZE;
+    memcpy(_buffer, __netstring_block, sizeof(char)*_cpy_count);
+    _chr_ret = memchr(_buffer, ':', sizeof(char)*_cpy_count);
+    if(_chr_ret == NULL)
+    {
+        return 2;
+    }
+    *_chr_ret = '\0';
+    _len = strtoul(_buffer, &_end_ptr, 10);
+    if(_end_ptr == _buffer)
+    {
+        return 3;
+    }
+    if(((_len == 0) || (_len == ULONG_MAX)) && (errno == ERANGE))
+    {
+        return 4;
+    }
+    _buffer_len = strlen(_buffer);
+    if(_len != (__netstring_len - _buffer_len - 2))
+    {
+        return 5;
+    }
+
+    if(*__string_block == NULL)
+    {
+#ifdef GRDX_NETSTRING_NO_ALLOC
+        return 6;
+#else /* GRDX_NETSTRING_NO_ALLOC */
+        _new_string = malloc(sizeof(char)*_len);
+        if(_new_string == NULL)
+        {
+            return 6;
+        }
+        *__string_block = _new_string;
+#endif /* GRDX_NETSTRING_NO_ALLOC */
+    }
+    else if(*__string_len < _len)
+    {
+#ifdef GRDX_NETSTRING_NO_ALLOC
+        return 7;
+#else /* GRDX_NETSTRING_NO_ALLOC */
+        _new_string = realloc(*__string_block, sizeof(char)*_len);
+        if(_new_string == NULL)
+        {
+            return 7;
+        }
+        *__string_block = _new_string;
+#endif /* GRDX_NETSTRING_NO_ALLOC */
+    }
+    *__string_len = _len;
+    memcpy(*__string_block, __netstring_block+_buffer_len+1, sizeof(char)*_len);
+    
+    return 0;
+}
+
+int grdx_string_to_netstring_ab(const char * __string_block, size_t __string_len, char ** __netstring_block, size_t * __netstring_len)
+{
+    char _buffer[LEN_BUFFER_SIZE];
+    int _buffer_len;
+    #ifndef GRDX_NETSTRING_NO_ALLOC
+    char * _new_netstring;
+    #endif /* GRDX_NETSTRING_NO_ALLOC */
+    size_t _new_netstring_len;
+    
+    _buffer_len = snprintf(_buffer, LEN_BUFFER_SIZE, "%lu", __string_len);
+    if(_buffer_len < 1)
+    {
+        return 1;
+    }
+    _new_netstring_len = __string_len+_buffer_len+2;
+    
+    if(*__netstring_block == NULL)
+    {
+#ifdef GRDX_NETSTRING_NO_ALLOC
+        return 2;
+#else /* GRDX_NETSTRING_NO_ALLOC */
+        _new_netstring = malloc(sizeof(char)*_new_netstring_len);
+        if(_new_netstring == NULL)
+        {
+            return 2;
+        }
+        *__netstring_block = _new_netstring;
+#endif /* GRDX_NETSTRING_NO_ALLOC */
+    }
+    else if(*__netstring_len < _new_netstring_len)
+    {
+#ifdef GRDX_NETSTRING_NO_ALLOC
+        return 3;
+#else /* GRDX_NETSTRING_NO_ALLOC */
+        _new_netstring = realloc(*__netstring_block, sizeof(char)*_new_netstring_len);
+        if(_new_netstring == NULL)
+        {
+            return 3;
+        }
+        *__netstring_block = _new_netstring;
+#endif /* GRDX_NETSTRING_NO_ALLOC */
+    }
+    *__netstring_len = _new_netstring_len;
+    memcpy(*__netstring_block, _buffer, sizeof(char)*_buffer_len);
+    (*__netstring_block)[_buffer_len] = ':';
+    memcpy((*__netstring_block)+_buffer_len+1, __string_block, sizeof(char)*__string_len);
+    (*__netstring_block)[_new_netstring_len-1] = ',';
+    
     return 0;
 }

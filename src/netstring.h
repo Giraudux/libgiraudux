@@ -6,10 +6,6 @@
  * \brief 
  */
 
-/*
-#define GRDX_NETSTRING_NO_ALLOC
-*/
-
 #ifndef NETSTRING_H
 #define NETSTRING_H
 
@@ -21,6 +17,23 @@
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>
+
+/**
+ * \fn int grdx_netstring_check_a(const char * __netstring)
+ * \param __netstring 
+ * \return 
+ * \brief 
+ */
+int grdx_netstring_check_a(const char * __netstring);
+
+/**
+ * \fn int grdx_netstring_check_ab(const char * __netstring_block, size_t __netstring_len)
+ * \param __netstring_block 
+ * \param __netstring_len 
+ * \return 
+ * \brief 
+ */
+int grdx_netstring_check_ab(const char * __netstring_block, size_t __netstring_len);
 
 /**
  * \fn int grdx_netstring_decode_ab(char ** __netstring_block, size_t * __netstring_len)
@@ -42,28 +55,6 @@ int grdx_netstring_decode_ab(char ** __netstring_block, size_t * __netstring_len
  */
 #ifndef GRDX_NETSTRING_NO_ALLOC
 int grdx_netstring_encode_ab(char ** __string_block, size_t * __string_len);
-#endif /* GRDX_NETSTRING_NO_ALLOC */
-
-/**
- * \fn int grdx_netstring_decode_wb(wchar_t ** __netstring_block, size_t * __netstring_len)
- * \param __netstring_block 
- * \param __netstring_len 
- * \return 
- * \brief 
- */
-#ifndef GRDX_NETSTRING_NO_ALLOC
-int grdx_netstring_decode_wb(wchar_t ** __netstring_block, size_t * __netstring_len);
-#endif /* GRDX_NETSTRING_NO_ALLOC */
-
-/**
- * \fn int grdx_netstring_encode_wb(wchar_t ** __string_block, size_t * __string_len)
- * \param __string_block 
- * \param __string_len 
- * \return 
- * \brief 
- */
-#ifndef GRDX_NETSTRING_NO_ALLOC
-int grdx_netstring_encode_wb(wchar_t ** __string_block, size_t * __string_len);
 #endif /* GRDX_NETSTRING_NO_ALLOC */
 
 /**
@@ -89,6 +80,45 @@ int grdx_netstring_to_string_ab(const char * __netstring_block, size_t __netstri
 int grdx_string_to_netstring_ab(const char * __string_block, size_t __string_len, char ** __netstring_block, size_t * __netstring_len);
 
 /**
+ * \fn int grdx_netstring_check_w(const wchar_t * __netstring)
+ * \param __netstring 
+ * \return 
+ * \brief 
+ */
+int grdx_netstring_check_w(const wchar_t * __netstring);
+
+/**
+ * \fn int grdx_netstring_check_wb(const wchar_t * __netstring_block, size_t __netstring_len)
+ * \param __netstring_block 
+ * \param __netstring_len 
+ * \return 
+ * \brief 
+ */
+int grdx_netstring_check_wb(const wchar_t * __netstring_block, size_t __netstring_len);
+
+/**
+ * \fn int grdx_netstring_decode_wb(wchar_t ** __netstring_block, size_t * __netstring_len)
+ * \param __netstring_block 
+ * \param __netstring_len 
+ * \return 
+ * \brief 
+ */
+#ifndef GRDX_NETSTRING_NO_ALLOC
+int grdx_netstring_decode_wb(wchar_t ** __netstring_block, size_t * __netstring_len);
+#endif /* GRDX_NETSTRING_NO_ALLOC */
+
+/**
+ * \fn int grdx_netstring_encode_wb(wchar_t ** __string_block, size_t * __string_len)
+ * \param __string_block 
+ * \param __string_len 
+ * \return 
+ * \brief 
+ */
+#ifndef GRDX_NETSTRING_NO_ALLOC
+int grdx_netstring_encode_wb(wchar_t ** __string_block, size_t * __string_len);
+#endif /* GRDX_NETSTRING_NO_ALLOC */
+
+/**
  * \fn int grdx_netstring_to_string_wb(const wchar_t * __netstring_block, size_t __netstring_len, wchar_t ** __string_block, size_t * __string_len)
  * \param __netstring_block 
  * \param __netstring_len 
@@ -109,40 +139,5 @@ int grdx_netstring_to_string_wb(const wchar_t * __netstring_block, size_t __nets
  * \brief 
  */
 int grdx_string_to_netstring_wb(const wchar_t * __string_block, size_t __string_len, wchar_t ** __netstring_block, size_t * __netstring_len);
-
-
-/**
- * \fn int grdx_netstring_check_a(const char * __netstring)
- * \param __netstring 
- * \return 
- * \brief 
- */
-int grdx_netstring_check_a(const char * __netstring);
-
-/**
- * \fn int grdx_netstring_check_ab(const char * __netstring_block, size_t __netstring_len)
- * \param __netstring_block 
- * \param __netstring_len 
- * \return 
- * \brief 
- */
-int grdx_netstring_check_ab(const char * __netstring_block, size_t __netstring_len);
-
-/**
- * \fn int grdx_netstring_check_w(const wchar_t * __netstring)
- * \param __netstring 
- * \return 
- * \brief 
- */
-int grdx_netstring_check_w(const wchar_t * __netstring);
-
-/**
- * \fn int grdx_netstring_check_wb(const wchar_t * __netstring_block, size_t __netstring_len)
- * \param __netstring_block 
- * \param __netstring_len 
- * \return 
- * \brief 
- */
-int grdx_netstring_check_wb(const wchar_t * __netstring_block, size_t __netstring_len);
 
 #endif
