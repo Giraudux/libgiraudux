@@ -10,7 +10,7 @@
 
 struct header_s
 {
-    char * name;
+    const char * name;
     char * value;
 };
 
@@ -55,7 +55,41 @@ int grdx_scgi_add_header(const char * __name, const char * __value, scgi_t * __s
     return 0;
 }
 
-char * grdx_scgi_get_header(char * __name, const scgi_t * __scgi)
+char * grdx_scgi_get_header(const char * __name, const scgi_t * __scgi)
 {
+    struct header_s _header_key;
+    struct header_s * _header_tfind;
+    
+    _header_key.name = __name;
+    _header_key.value = NULL;
+    _header_tfind = tfind(&_header_key, &(__scgi->tree_header), compare_header);
+    if(_header_tfind == NULL)
+    {
+        return NULL;
+    }
+    return _header_tfind->value;
+}
+
+int grdx_scgi_del_header(const char * __name, scgi_t * __scgi)
+{
+    struct header_s _header_key;
+    struct header_s * _header_tdelete;
+    
+    _header_key.name = __name;
+    _header_key.value = NULL;
+    _header_tdelete = tdelete(&_header_key, &(__scgi->tree_header), compare_header);
+    if(_header_tdelete == NULL)
+    {
+        return 1;
+    }
+    if(_header_tdelete->name != NULL)
+    {
+        free((char*)_header_tdelete->name);
+    }
+    if(_header_tdelete->value != NULL)
+    {
+        free(_header_tdelete->value);
+    }
+    free(_header_tdelete);
     return 0;
 }
