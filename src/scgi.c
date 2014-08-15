@@ -14,12 +14,7 @@ struct header_s
     char * value;
 };
 
-struct scgi_s
-{
-    void * tree_header;
-    char * body;
-    size_t body_len;
-};
+int free_header_s(struct header_s * __header);
 
 int compare_header(const void * hs1, const void * hs2)
 {
@@ -37,7 +32,7 @@ int grdx_scgi_init(scgi_t * __scgi)
 int grdx_scgi_add_header(const char * __name, const char * __value, scgi_t * __scgi)
 {
     struct header_s * _header;
-    void * _tsearch_res;
+    void * _tsearch_ret;
     
     _header = malloc(sizeof(struct header_s));
     if(_header == NULL)
@@ -46,10 +41,10 @@ int grdx_scgi_add_header(const char * __name, const char * __value, scgi_t * __s
     }
     _header->name = strdup(__name);
     _header->value = strdup(__value);
-    _tsearch_res = tsearch(_header , &(__scgi->tree_header), compare_header);
-    if(_tsearch_res == NULL)
+    _tsearch_ret = tsearch(_header , &(__scgi->tree_header), compare_header);
+    if(_tsearch_ret == NULL)
     {
-        free(_header);
+        free_header_s(_header);
         return 2;
     }
     return 0;
@@ -58,38 +53,68 @@ int grdx_scgi_add_header(const char * __name, const char * __value, scgi_t * __s
 char * grdx_scgi_get_header(const char * __name, const scgi_t * __scgi)
 {
     struct header_s _header_key;
-    struct header_s * _header_tfind;
+    void * _tfind_ret;
     
     _header_key.name = __name;
     _header_key.value = NULL;
-    _header_tfind = tfind(&_header_key, &(__scgi->tree_header), compare_header);
-    if(_header_tfind == NULL)
+    _tfind_ret = tfind(&_header_key, &(__scgi->tree_header), compare_header);
+    if(_tfind_ret == NULL)
     {
         return NULL;
     }
-    return _header_tfind->value;
+    return (*((struct header_s**)_tfind_ret))->value;
 }
 
 int grdx_scgi_del_header(const char * __name, scgi_t * __scgi)
 {
     struct header_s _header_key;
-    struct header_s * _header_tdelete;
+    void * _tfind_ret;
+    void * _tdelete_ret;
+    struct header_s * _header_del;
     
     _header_key.name = __name;
     _header_key.value = NULL;
-    _header_tdelete = tdelete(&_header_key, &(__scgi->tree_header), compare_header);
-    if(_header_tdelete == NULL)
+    _tfind_ret = tfind(&_header_key, &(__scgi->tree_header), compare_header);
+    if(_tfind_ret == NULL)
     {
         return 1;
     }
-    if(_header_tdelete->name != NULL)
+    _header_del = *((struct header_s**)_tfind_ret);
+    _tdelete_ret = tdelete(&_header_key, &(__scgi->tree_header), compare_header);
+    if(_tdelete_ret == NULL)
     {
-        free((char*)_header_tdelete->name);
+        return 2;
     }
-    if(_header_tdelete->value != NULL)
+    return free_header_s(_header_del);
+}
+
+int free_header_s(struct header_s * __header)
+{
+    int res = 0;
+    
+    if(__header == NULL)
     {
-        free(_header_tdelete->value);
+        res++;
     }
-    free(_header_tdelete);
-    return 0;
+    else
+    {
+        if(__header->name == NULL)
+        {
+            res+=2;
+        }
+        else
+        {
+            free((char*)(__header->name));
+        }
+        if(__header->value == NULL)
+        {
+            res+=3;
+        }
+        else
+        {
+            free(__header->value);
+        }
+        free(__header);
+    }
+    return res;
 }

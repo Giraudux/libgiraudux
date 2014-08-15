@@ -13,8 +13,14 @@
 
 #include "netstring.h"
 
-struct scgi_s;
 typedef struct scgi_s scgi_t;
+
+struct scgi_s
+{
+    void * tree_header;
+    char * body;
+    size_t body_len;
+};
 
 int grdx_scgi_init(scgi_t * __scgi);
 int grdx_scgi_add_header(const char * __name, const char * __value, scgi_t * __scgi);
