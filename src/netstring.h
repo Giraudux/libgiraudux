@@ -18,65 +18,76 @@
 #include <string.h>
 #include <wchar.h>
 
+/*typedef giraudux_string_s giraudux_string_t;*/
+
+struct giraudux_string_s
+{
+    char * content;
+    size_t length;
+};
+
 /**
- * \fn int grdx_netstring_check_a(const char * __netstring)
+ * \fn int giraudux_netstring_check(const char * __netstring, size_t __max_len)
  * \param __netstring 
+ * \param __max_len 
  * \return 
  * \brief 
  */
-int grdx_netstring_check_a(const char * __netstring);
+int giraudux_netstring_check(const char * __netstring, size_t __max_len);
 
 /**
- * \fn int grdx_netstring_check_ab(const char * __netstring_block, size_t __netstring_len)
- * \param __netstring_block 
- * \param __netstring_len 
+ * \fn int giraudux_netstring_decode_re(char ** __netstring, size_t * __max_len)
+ * \param __netstring
+ * \param __max_len 
  * \return 
  * \brief 
  */
-int grdx_netstring_check_ab(const char * __netstring_block, size_t __netstring_len);
+#ifndef GIRAUDUX_NETSTRING_NO_ALLOC
+int giraudux_netstring_decode_re(char ** __netstring, size_t * __max_len);
+#endif /* GIRAUDUX_NETSTRING_NO_ALLOC */
 
 /**
- * \fn int grdx_netstring_decode_ab(char ** __netstring_block, size_t * __netstring_len)
- * \param __netstring_block 
- * \param __netstring_len 
+ * \fn int giraudux_netstring_encode_re(char ** __string, size_t * __len)
+ * \param __string
+ * \param __len 
  * \return 
  * \brief 
  */
-#ifndef GRDX_NETSTRING_NO_ALLOC
-int grdx_netstring_decode_ab(char ** __netstring_block, size_t * __netstring_len);
-#endif /* GRDX_NETSTRING_NO_ALLOC */
+#ifndef GIRAUDUX_NETSTRING_NO_ALLOC
+int giraudux_netstring_encode_re(char ** __string, size_t * __len);
+#endif /* GIRAUDUX_NETSTRING_NO_ALLOC */
 
 /**
- * \fn int grdx_netstring_encode_ab(char ** __string_block, size_t * __string_len)
- * \param __string_block 
- * \param __string_len 
+ * \fn struct giraudux_string_s giraudux_netstring_decode_ma(const char * __netstring, size_t __max_len)
+ * \param __netstring
+ * \param __max_len 
  * \return 
  * \brief 
  */
-#ifndef GRDX_NETSTRING_NO_ALLOC
-int grdx_netstring_encode_ab(char ** __string_block, size_t * __string_len);
-#endif /* GRDX_NETSTRING_NO_ALLOC */
+#ifndef GIRAUDUX_NETSTRING_NO_ALLOC
+struct giraudux_string_s giraudux_netstring_decode_ma(const char * __netstring, size_t __max_len);
+#endif /* GIRAUDUX_NETSTRING_NO_ALLOC */
 
 /**
- * \fn int grdx_netstring_to_string_ab(const char * __netstring_block, size_t __netstring_len, char ** __string_block, size_t * __string_len)
- * \param __netstring_block 
- * \param __netstring_len 
- * \param __string_block 
- * \param __string_len 
+ * \fn struct giraudux_string_s giraudux_netstring_encode_ma(const char * __string, size_t __len)
+ * \param __string
+ * \param __len 
  * \return 
  * \brief 
  */
-int grdx_netstring_to_string_ab(const char * __netstring_block, size_t __netstring_len, char ** __string_block, size_t * __string_len);
+#ifndef GIRAUDUX_NETSTRING_NO_ALLOC
+struct giraudux_string_s giraudux_netstring_encode_ma(const char * __string, size_t __len);
+#endif /* GIRAUDUX_NETSTRING_NO_ALLOC */
 
 /**
- * \fn int grdx_string_to_netstring_ab(const char * __string_block, size_t __string_len, char ** __netstring_block, size_t * __netstring_len)
- * \param __string_block 
- * \param __string_len 
- * \param __netstring_block 
- * \param __netstring_len 
+ * \fn struct giraudux_string_s giraudux_netstring_decode(const char * __netstring, size_t __max_len)
+ * \param __netstring
+ * \param __max_len 
  * \return 
  * \brief 
  */
-int grdx_string_to_netstring_ab(const char * __string_block, size_t __string_len, char ** __netstring_block, size_t * __netstring_len);
+#ifndef GIRAUDUX_NETSTRING_NO_ALLOC
+struct giraudux_string_s giraudux_netstring_decode(const char * __netstring, size_t __max_len);
+#endif /* GIRAUDUX_NETSTRING_NO_ALLOC */
 
 #endif
