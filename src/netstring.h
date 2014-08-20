@@ -11,6 +11,7 @@
 
 #define LEN_BUFFER_SIZE 10
 
+#include <ctype.h>
 #include <errno.h>
 #include <limits.h>
 #include <stdlib.h>

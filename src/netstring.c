@@ -16,6 +16,7 @@ int giraudux_netstring_check(const char * __netstring, size_t __max_len)
     size_t _len;
     char * _end_ptr;
     size_t _buffer_len;
+    unsigned short i;
         
     _cpy_count = (__max_len < LEN_BUFFER_SIZE) ? __max_len : LEN_BUFFER_SIZE;
     memcpy(_buffer, __netstring, _cpy_count*sizeof(char));
@@ -25,19 +26,35 @@ int giraudux_netstring_check(const char * __netstring, size_t __max_len)
         return 1;
     }
     *_chr_ret = '\0';
-    _len = strtoul(_buffer, &_end_ptr, 10);
-    if(_end_ptr == _buffer)
+    for(i=0; i<_cpy_count; i++)
     {
-        return 2;
-    }
-    if(((_len == 0) || (_len == ULONG_MAX)) && (errno == ERANGE))
+		if(_buffer[i] == '\0')
+		{
+			break;
+		}
+		if(isdigit(_buffer[i]) == 0)
+		{
+			return 2;
+		}
+	}
+    errno = 0;
+    _len = strtoul(_buffer, &_end_ptr, 10);
+    if((errno == ERANGE && (_len == ULONG_MAX || _len == 0)) || (errno != 0 && _len == 0))
     {
         return 3;
     }
-    _buffer_len = strlen(_buffer);
-    if(__netstring[_buffer_len+1+_len] != ',')
+    if(_end_ptr == _buffer)
     {
         return 4;
+    }
+    _buffer_len = strlen(_buffer);
+    if((_buffer_len+1+_len+1) > __max_len)
+    {
+		return 5;
+	}
+    if(__netstring[_buffer_len+1+_len] != ',')
+    {
+        return 6;
     }
     return 0;
 }
