@@ -37,6 +37,15 @@ struct giraudux_string_s
 int giraudux_netstring_check(const char * __netstring, size_t __max_len);
 
 /**
+ * \fn size_t giraudux_netstring_len(const char * __netstring, size_t __max_len)
+ * \param __netstring 
+ * \param __max_len 
+ * \return 
+ * \brief 
+ */
+size_t giraudux_netstring_len(const char * __netstring, size_t __max_len);
+
+/**
  * \fn int giraudux_netstring_decode_re(char ** __netstring, size_t * __max_len)
  * \param __netstring
  * \param __max_len 
