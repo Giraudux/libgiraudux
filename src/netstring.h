@@ -19,7 +19,7 @@
 #include <string.h>
 #include <wchar.h>
 
-/*typedef giraudux_string_s giraudux_string_t;*/
+typedef struct giraudux_string_s giraudux_string_t;
 
 struct giraudux_string_s
 {
@@ -96,8 +96,6 @@ struct giraudux_string_s giraudux_netstring_encode_ma(const char * __string, siz
  * \return 
  * \brief 
  */
-#ifndef GIRAUDUX_NETSTRING_NO_ALLOC
 struct giraudux_string_s giraudux_netstring_decode(const char * __netstring, size_t __max_len);
-#endif /* GIRAUDUX_NETSTRING_NO_ALLOC */
 
 #endif
